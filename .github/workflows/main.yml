@@ -31,7 +31,7 @@ jobs:
         # npm run build
 
         # Copy the built files to the EC2 instance
-        scp -r ./* ubuntu@3.110.171.97:/path/to/deploy
+        scp -r ./* ubuntu@3.110.171.97:/home/ubuntu/frontend
 
         # Optionally, you can run additional commands on the EC2 instance
-        ssh ubuntu@3.110.171.97 'cd /path/to/deploy && npm install && npm start'
+        ssh ubuntu@3.110.171.97 'cd /home/ubuntu/frontend && npm install && npm start'
