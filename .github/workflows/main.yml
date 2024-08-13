@@ -1,4 +1,4 @@
-name: Testing
+name: Deploy to EC2
 
 on:
   push:
@@ -18,6 +18,11 @@ jobs:
       with:
         ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
+    - name: Add EC2 to known hosts
+      run: |
+        mkdir -p ~/.ssh
+        ssh-keyscan 3.110.171.97 >> ~/.ssh/known_hosts
+
     - name: Build and Deploy
       run: |
         # Build your application here if needed
@@ -29,4 +34,4 @@ jobs:
         scp -r ./* ubuntu@3.110.171.97:/path/to/deploy
 
         # Optionally, you can run additional commands on the EC2 instance
-        ssh ubuntu@your-ec2-instance-ip 'cd /path/to/deploy && npm install && npm start'
+        ssh ubuntu@3.110.171.97 'cd /path/to/deploy && npm install && npm start'
