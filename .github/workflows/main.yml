@@ -24,7 +24,7 @@ jobs:
         run: npm run build
       
       - name: List files in build directory
-        run: ls -la build/
+        run: ls -la /home/ubuntu/build/
 
       - name: Create Tarball
         run: tar -czvf frontend.tar.gz -C build .
