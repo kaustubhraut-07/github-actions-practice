@@ -4,7 +4,9 @@ const App = () => {
   return (
     <div>
       <p>
-        checking the workflow file checking 1
+
+        checking the workflow file and updated changes added correct path 1
+
       </p>
     </div>
   )

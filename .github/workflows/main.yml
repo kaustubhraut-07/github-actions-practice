@@ -1,0 +1,43 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'  # Use the latest stable version of Node.js
+
+    - name: Install dependencies
+      run: npm install
+
+    - name: Build application
+      run: npm run build
+
+    - name: Set up SSH
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+
+    - name: Add EC2 to known hosts
+      run: |
+        mkdir -p ~/.ssh
+        ssh-keyscan 3.110.171.97 >> ~/.ssh/known_hosts
+
+    - name: Build and Deploy
+      run: |
+        # Copy the built files to the EC2 instance
+        scp -r ./* ubuntu@3.110.171.97:/home/ubuntu/frontend
+
+        # Optionally, you can run additional commands on the EC2 instance
+        ssh ubuntu@3.110.171.97 'cd /home/ubuntu/frontend && npm install && npm start'
