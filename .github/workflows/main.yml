@@ -16,7 +16,7 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '18' 
+        node-version: '16'  # Use the latest stable version of Node.js
 
     - name: Cache Node.js modules
       uses: actions/cache@v2
@@ -48,4 +48,4 @@ jobs:
         scp -r ./dist/* ubuntu@3.110.171.97:/home/ubuntu/frontend
 
         # Optionally, you can run additional commands on the EC2 instance
-        ssh ubuntu@3.110.171.97 'cd /home/ubuntu/frontend && npm install && npm run serve'
+        ssh ubuntu@3.110.171.97 'cd /home/ubuntu/frontend && npm install && npm run preview'
