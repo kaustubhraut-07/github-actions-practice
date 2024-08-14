@@ -39,3 +39,13 @@ jobs:
           port: ${{ secrets.PORT }}
           source: frontend.tar.gz
           target: /home/ubuntu/frontend
+
+      
+      - name: Deploy to server 
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USER_NAME }}
+          port: ${{ secrets.PORT }}
+          key: ${{ secrets.KEY }}
+          script: sudo tar -xvf /home/ubuntu/frontend/frontend.tar.gz -C /var/www/html/frontend/
