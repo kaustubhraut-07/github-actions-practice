@@ -28,7 +28,7 @@ jobs:
         run: ls -la dist/
 
       - name: Create Tarball
-        run: tar -czvf frontend.tar.gz -C build .
+        run: tar -czvf frontend.tar.gz -C dist .
 
       - name: Copy files to server
         uses: appleboy/scp-action@master
