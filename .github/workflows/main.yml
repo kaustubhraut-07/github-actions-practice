@@ -16,7 +16,15 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v2
       with:
-        node-version: '16'  # Use the latest stable version of Node.js
+        node-version: '18' 
+
+    - name: Cache Node.js modules
+      uses: actions/cache@v2
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
 
     - name: Install dependencies
       run: npm install
@@ -37,7 +45,7 @@ jobs:
     - name: Build and Deploy
       run: |
         # Copy the built files to the EC2 instance
-        scp -r ./* ubuntu@3.110.171.97:/home/ubuntu/frontend
+        scp -r ./dist/* ubuntu@3.110.171.97:/home/ubuntu/frontend
 
         # Optionally, you can run additional commands on the EC2 instance
-        ssh ubuntu@3.110.171.97 'cd /home/ubuntu/frontend && npm install && npm start'
+        ssh ubuntu@3.110.171.97 'cd /home/ubuntu/frontend && npm install && npm run serve'
