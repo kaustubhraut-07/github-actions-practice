@@ -1,4 +1,4 @@
-workflow: react-app-deploy
+workflow: Deploy to Production
 
 on:
   push: 
