@@ -1,42 +1,41 @@
 name: react-app-deploy
 
 on:
-  push: 
+  push:
     branches:
       - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: checkout code
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name : setup node
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - name: install dependency
+      - name: Install Dependencies
         run: npm install
 
-      - name: build application
+      - name: Build Application
         run: npm run build
-      
+
       - name: List files in build directory
-        run: ls -la /home/ubuntu/build/
+        run: ls -la build/
 
       - name: Create Tarball
         run: tar -czvf frontend.tar.gz -C build .
 
-      - name: copy files to server
+      - name: Copy files to server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           port: ${{ secrets.PORT }}
-          source: "build/*"
-          target: "/home/ubuntu/frontend"
-
-
+          source: frontend.tar.gz
+          target: /home/ubuntu/frontend
