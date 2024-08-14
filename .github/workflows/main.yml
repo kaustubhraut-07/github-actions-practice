@@ -40,34 +40,5 @@ jobs:
           source: frontend.tar.gz
           target: /home/ubuntu/frontend
 
-      - name: Deploy to server and start application
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          port: ${{ secrets.PORT }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          script: |
-            # Ensure the target directory exists and is writable
-            sudo mkdir -p /var/www/html/frontend
-            sudo chown -R $USER:$USER /var/www/html/frontend
-            
-            # Remove any existing tarball to avoid conflicts
-            sudo rm -f /var/www/html/frontend/frontend.tar.gz
-
-            # Move the new tarball to the target directory
-            sudo mv /home/ubuntu/frontend/frontend.tar.gz /var/www/html/frontend/
-            
-            # Extract the tarball
-            sudo tar -xvf /var/www/html/frontend/frontend.tar.gz -C /var/www/html/frontend/
-
-            # Navigate to the extracted directory
-            cd /var/www/html/frontend
-
-            # Install dependencies and build the project (if needed)
-            npm install
-            npm run build
-
-            # Serve the application
-            npm install -g http-server
-            nohup http-server ./ -p 8080 &
+      
+     
