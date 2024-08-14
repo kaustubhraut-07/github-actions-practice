@@ -40,8 +40,18 @@ jobs:
           source: frontend.tar.gz
           target: /home/ubuntu/frontend
 
-      
-      - name: Deploy to server 
+      - name: Prepare server directory
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          port: ${{ secrets.PORT }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            sudo mkdir -p /var/www/html/frontend
+            sudo chown -R $USER:$USER /var/www/html/frontend
+
+      - name: Deploy to server
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
