@@ -40,8 +40,7 @@ jobs:
           source: frontend.tar.gz
           target: /home/ubuntu/frontend
 
-      
-      - name: Deploy to server 
+      - name: Deploy to server
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
@@ -50,5 +49,6 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             sudo mkdir -p /var/www/html/frontend
-            sudo chown -R $USER:$USER /var/www/html/frontend 
+            sudo chown -R $USER:$USER /var/www/html/frontend
+            sudo rm -f /var/www/html/frontend/frontend.tar.gz
             sudo tar -xvf /home/ubuntu/frontend/frontend.tar.gz -C /var/www/html/frontend/
