@@ -1,4 +1,4 @@
-name: React App Deploy to Production
+workflow: react-app-deploy
 
 on:
   push: 
@@ -12,7 +12,7 @@ jobs:
       - name: checkout code
         uses: actions/checkout@v3
 
-      - name: setup node
+      - name : setup node
         uses: actions/setup-node@v3
         with:
           node-version: 18
@@ -22,4 +22,15 @@ jobs:
 
       - name: build application
         run: npm run build
+
+      - name: copy files to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: ${{ secrets.PORT }}
+          source: "build/*"
+          target: "/home/ubuntu/frontend"
+
 
