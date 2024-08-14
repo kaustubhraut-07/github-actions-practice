@@ -40,7 +40,7 @@ jobs:
           source: frontend.tar.gz
           target: /home/ubuntu/frontend
 
-      - name: Deploy to server
+      - name: Deploy to server and start application
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
@@ -48,7 +48,27 @@ jobs:
           port: ${{ secrets.PORT }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            # Ensure the target directory exists
             sudo mkdir -p /var/www/html/frontend
             sudo chown -R $USER:$USER /var/www/html/frontend
+
+            # Remove any existing tarball in the target directory
             sudo rm -f /var/www/html/frontend/frontend.tar.gz
+
+            # Extract the tarball
             sudo tar -xvf /home/ubuntu/frontend/frontend.tar.gz -C /var/www/html/frontend/
+
+            # Navigate to the extracted directory
+            cd /var/www/html/frontend
+
+            # Install dependencies and build the project (if needed)
+            npm install
+            npm run build
+
+            # Serve the application
+            # Use a static file server like http-server
+            npm install -g http-server
+            nohup http-server ./ -p 8080 &
+            
+            # Optionally, set up a systemd service for long-term management
+            # Create a systemd service file if needed (not shown here)
