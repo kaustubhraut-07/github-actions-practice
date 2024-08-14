@@ -1,4 +1,4 @@
-workflow: Deploy to Production
+workflow: react-app-deploy
 
 on:
   push: 
@@ -16,10 +16,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-          
+
       - name: install dependency
         run: npm install
 
       - name: build application
-          run: npm run build
+        run: npm run build
 
