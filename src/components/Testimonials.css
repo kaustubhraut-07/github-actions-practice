@@ -1,0 +1,44 @@
+.testimonials {
+    padding: 3rem 2rem;
+    background-color: #f9f9f9;
+    margin: 2rem 0;
+    border-radius: 10px;
+  }
+  
+  .testimonials h2 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+  }
+  
+  .testimonials-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .testimonial-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .testimonial-item img {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+  }
+  
+  .testimonial-item blockquote {
+    font-size: 1.1rem;
+    color: #333;
+    font-style: italic;
+    margin: 0;
+  }
+  
+  .testimonial-item p {
+    margin: 0;
+    font-weight: bold;
+    color: #666;
+  }
+  
