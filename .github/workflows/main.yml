@@ -69,7 +69,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            # Extract the tarball to the target directory
+            # Extract the tarball to the target directoryy
             sudo mkdir -p /var/www/html/frontend
             sudo tar -xvf /home/ubuntu/frontend/frontend.tar.gz -C /var/www/html/frontend/
 
