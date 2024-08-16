@@ -1,7 +1,7 @@
 name: react-app-deploy
 
 on:
-  push: 
+  push:
     branches:
       - main
 
@@ -9,33 +9,53 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout code
+      - name: Checkout code
         uses: actions/checkout@v3
 
-      - name : setup node
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
-      - name: install dependency
+      - name: Install Dependencies
         run: npm install
 
-      - name: build application
+      - name: Build Application
         run: npm run build
-      
-     
+
+      - name: List files in dist directory
+        run: ls -la dist/
 
       - name: Create Tarball
-        run: tar -czvf frontend.tar.gz -C frontend .
+        run: tar -czvf frontend.tar.gz -C dist .
 
-      - name: copy files to server
+      - name: Copy files to server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           port: ${{ secrets.PORT }}
-          source: "build/*"
+          source: "frontend.tar.gz"
           target: "/home/ubuntu/frontend"
 
+      - name: Execute Deployment Script on Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            # Extract the tarball to the target directory
+            sudo mkdir -p /var/www/html/frontend
+            sudo tar -xvf /home/ubuntu/frontend/frontend.tar.gz -C /var/www/html/frontend/
 
+            # Perform a health check
+            if curl -f http://localhost/; then
+              echo "Health check passed, restarting Nginx..."
+              sudo service nginx restart
+            else
+              echo "Health check failed, aborting Nginx restart."
+              exit 1
+            fi
