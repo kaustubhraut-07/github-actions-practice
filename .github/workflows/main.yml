@@ -39,6 +39,16 @@ jobs:
           source: "frontend.tar.gz"
           target: "/home/ubuntu/frontend"
 
+      - name: Remove existing tarball on server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            rm -f /home/ubuntu/frontend/frontend.tar.gz
+
       - name: Execute Deployment Script on Server
         uses: appleboy/ssh-action@master
         with:
