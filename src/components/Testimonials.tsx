@@ -18,6 +18,11 @@ const Testimonials: React.FC = () => {
       quote: 'Exceptional quality and service. Five stars!',
       image: 'https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNjUyOXwwfDF8c2VhcmNofDF8fGxhbmRzY2FwaW5nfGVufDB8fHx8MTYyNzUxMjI5Mw&ixlib=rb-1.2.1&q=80&w=200',
     },
+    {
+        name: 'Mark Doe',
+        quote: 'Exceptional quality and service. Five stars!',
+        image: 'https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MnwzNjUyOXwwfDF8c2VhcmNofDF8fGxhbmRzY2FwaW5nfGVufDB8fHx8MTYyNzUxMjI5Mw&ixlib=rb-1.2.1&q=80&w=200',
+      },
   ];
 
   return (
