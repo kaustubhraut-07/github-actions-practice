@@ -29,7 +29,7 @@ jobs:
       - name: Create Tarball
         run: tar -czvf frontend.tar.gz -C dist .
 
-      - name: Remove existing tarball on server
+      - name: Remove existing tarball and directory on server
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
@@ -38,13 +38,21 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             sudo rm -f /home/ubuntu/frontend/frontend.tar.gz
-            sudo mkdir -p /home/ubuntu/frontend
-            sudo chown -R ${{ secrets.USERNAME }}:${{ secrets.USERNAME }} /home/ubuntu/frontend
+            sudo rm -rf /var/www/html/frontend
+            sudo mkdir -p /var/www/html/frontend
+            sudo chown -R ${{ secrets.USERNAME }}:${{ secrets.USERNAME }} /var/www/html/frontend
+
+      - name: Copy files to server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: ${{ secrets.PORT }}
           source: "frontend.tar.gz"
           target: "/home/ubuntu/frontend"
-          
 
-      - name: Extract tarball on server
+      - name: Extract tarball on server and deploy
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.HOST }}
@@ -52,9 +60,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            sudo tar -xvf /home/ubuntu/frontend/frontend.tar.gz -C /home/ubuntu/frontend/
-                        # Extract the tarball to the target directoryy
-            sudo mkdir -p /var/www/html/frontend
+            # Extract the tarball to the target directory
             sudo tar -xvf /home/ubuntu/frontend/frontend.tar.gz -C /var/www/html/frontend/
 
             # Perform a health check
@@ -65,5 +71,3 @@ jobs:
               echo "Health check failed, aborting Nginx restart."
               exit 1
             fi
-
-    
