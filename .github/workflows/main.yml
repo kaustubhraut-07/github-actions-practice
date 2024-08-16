@@ -23,8 +23,7 @@ jobs:
       - name: build application
         run: npm run build
       
-      - name: List files in build directory
-        run: ls -la /home/ubuntu/frontend/
+     
 
       - name: Create Tarball
         run: tar -czvf frontend.tar.gz -C frontend .
