@@ -8,7 +8,7 @@ const App: React.FC = () => {
     <div className="App">
       <header className="App-header">
         <nav className="navbar">
-          <h1 className="logo">CoolSite</h1>
+          <h1 className="logo">CoolSite Testing for Github actions</h1>
           <ul className="nav-links">
             <li><a href="#home">Home</a></li>
             <li><a href="#about">About</a></li>

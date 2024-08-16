@@ -81,3 +81,75 @@ jobs:
               echo "Health check failed, aborting Nginx restart."
               exit 1
             fi
+
+
+
+name: react-app-deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Application
+        run: npm run build
+
+      - name: List files in dist directory
+        run: ls -la dist/
+
+      - name: Create Tarball
+        run: tar -czvf frontend.tar.gz -C dist .
+
+      - name: Remove existing tarball on server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            sudo rm -f /home/ubuntu/frontend/frontend.tar.gz
+            sudo mkdir -p /home/ubuntu/frontend
+            sudo chown -R ${{ secrets.USERNAME }}:${{ secrets.USERNAME }} /home/ubuntu/frontend
+          source: "frontend.tar.gz"
+          target: "/home/ubuntu/frontend"
+          
+
+      - name: Extract tarball on server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            sudo tar -xvf /home/ubuntu/frontend/frontend.tar.gz -C /home/ubuntu/frontend/
+                        # Extract the tarball to the target directoryy
+            sudo mkdir -p /var/www/html/frontend
+            sudo tar -xvf /home/ubuntu/frontend/frontend.tar.gz -C /var/www/html/frontend/
+
+            # Perform a health check
+            if curl -f http://localhost/; then
+              echo "Health check passed, restarting Nginx..."
+              sudo service nginx restart
+            else
+              echo "Health check failed, aborting Nginx restart."
+              exit 1
+            fi
+
+    
