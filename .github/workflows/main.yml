@@ -23,7 +23,19 @@ jobs:
       run: |
         docker build -t ${{ secrets.DOCKER_USERNAME }}/test-app:latest .
         docker push ${{ secrets.DOCKER_USERNAME }}/test-app:latest
-
+    
+    - name: SSH into EC2 and deploy
+      uses: appleboy/ssh-action@master
+      with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            sudo apt-get update
+            sudo apt-get install -y curl gnupg
+  
+            
    
 
     # - name: Notify success
