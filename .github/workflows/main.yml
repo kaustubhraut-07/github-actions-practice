@@ -24,28 +24,21 @@ jobs:
         docker build -t ${{ secrets.DOCKER_USERNAME }}/test-app:latest .
         docker push ${{ secrets.DOCKER_USERNAME }}/test-app:latest
 
-    - name: SSH into EC2 and deploy
-      uses: appleboy/ssh-action@v0.1.3
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.EC2_SSH_KEY }}
-        script: |
-          # Set up kubectl on EC2
-          sudo apt-get update
-          sudo apt-get install -y kubectl
-          
-          # Create kubeconfig
-          echo "${{ secrets.KUBECONFIG_CONTENT }}" > kubeconfig
-          export KUBECONFIG=$(pwd)/kubeconfig
-          
-          # Apply Kubernetes manifests
-          kubectl apply -f ~/k8s/deployment.yaml
-          
-          
-          # Verify Deployment
-          kubectl rollout status deployment/test-app
-          kubectl get pods -l app=test-app
+        - name: SSH into EC2 and deploy
+        uses: appleboy/ssh-action@v0.1.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            sudo apt-get update
+            sudo apt-get install -y kubectl
+            echo "${{ secrets.KUBECONFIG_CONTENT }}" > kubeconfig
+            export KUBECONFIG=$(pwd)/kubeconfig
+            kubectl apply -f ~/k8s/deployment.yaml
+            kubectl rollout status deployment/test-app
+            kubectl get pods -l app=test-app
+      
 
     - name: Notify success
       if: success()
