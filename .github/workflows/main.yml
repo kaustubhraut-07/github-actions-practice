@@ -38,7 +38,8 @@ jobs:
           kubectl apply -f ~/k8s/deployment.yaml
           kubectl rollout status deployment/test-app
           kubectl get pods -l app=test-app
+          echo "Sucessfull"
 
-    - name: Notify success
-      if: success()
-      run: echo "Deployment successful!"
+    # - name: Notify success
+    #   if: success()
+    #   run: echo "Deployment successful!"
