@@ -35,11 +35,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y kubectl
           
-          export KUBECONFIG=$(pwd)/kubeconfig
-          kubectl apply -f ~/k8s/deployment.yaml
-          kubectl rollout status deployment/test-app
-          kubectl get pods -l app=test-app
-          echo "Sucessfull"
+          
 
     # - name: Notify success
     #   if: success()
