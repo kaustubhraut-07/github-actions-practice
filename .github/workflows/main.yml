@@ -41,7 +41,7 @@ jobs:
           
           # Apply Kubernetes manifests
           kubectl apply -f ~/k8s/deployment.yaml
-          kubectl apply -f ~/k8s/service.yaml
+          
           
           # Verify Deployment
           kubectl rollout status deployment/test-app
