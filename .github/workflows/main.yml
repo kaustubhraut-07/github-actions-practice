@@ -24,16 +24,28 @@ jobs:
         docker build -t ${{ secrets.DOCKER_USERNAME }}/test-app:latest .
         docker push ${{ secrets.DOCKER_USERNAME }}/test-app:latest
 
-    - name: SSH into EC2 and deploy
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.EC2_SSH_KEY }}
-        port: ${{ secrets.PORT }}
-        script: |
-          sudo apt-get update
-          sudo apt-get install -y kubectl
+        - name: SSH into EC2 and deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            sudo apt-get update
+            sudo apt-get install -y curl
+            curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+            echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+            sudo apt-get update
+            sudo apt-get install -y kubectl
+            # Ensure kubectl is installed
+            kubectl version --client
+            echo "${{ secrets.KUBECONFIG_CONTENT }}" > kubeconfig
+            export KUBECONFIG=$(pwd)/kubeconfig
+            kubectl apply -f ~/k8s/deployment.yaml
+            kubectl rollout status deployment/test-app
+            kubectl get pods -l app=test-app
+      
           
           
 
