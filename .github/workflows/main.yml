@@ -33,7 +33,7 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             sudo apt-get update
-            
+            echo "Deploying..."
 
             kubectl apply -f - <<EOF
             apiVersion: apps/v1
